@@ -180,7 +180,7 @@
       return (cameraVideo.videoWidth > 0);
     };
 
-    var captureFrame = function() {
+    var captureFrame = function(timestamp) {
 
       // Work out which part of the video to capture and apply to canvas.
       canvas.drawImage(cameraVideo, sx /scaleFactor, sy/scaleFactor, sWidth/scaleFactor, sHeight/scaleFactor, dx, dy, dWidth, dHeight);
@@ -191,6 +191,8 @@
       if(self.onframe) self.onframe();
 
       coordinatesHaveChanged = false;
+
+      requestAnimationFrame(captureFrame.bind(self));
     };
 
     var getCamera = function(videoSource, cb) {
@@ -221,7 +223,7 @@
           
           var isSetup = setupVariables(e);
           if(isSetup) {
-            setInterval(captureFrame.bind(self), 4);
+            requestAnimationFrame(captureFrame.bind(self));
           }
           else {
             // This is just to get around the fact that the videoWidth is not
@@ -229,7 +231,7 @@
             setTimeout(function() {
               setupVariables(e);
 
-              setInterval(captureFrame.bind(self), 4);
+              requestAnimationFrame(captureFrame.bind(self));
             }, 100);
           }
 
