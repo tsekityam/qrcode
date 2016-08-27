@@ -52,15 +52,14 @@
 
     this.currentUrl = undefined;
 
+    var decodeWorker = new Worker('scripts/jsqrcode/qrworker.js');
 
     this.detectQRCode = function(imageData, callback) {
       callback = callback || function() {};
 
-      client.decode(imageData, function(result) {
-        if(result !== undefined) {
-          self.currentUrl = result;
-        }
-        callback(result);
+      decodeWorker.postMessage(imageData);
+      decodeWorker.addEventListener('message', function(msg) {
+        callback(msg.data);
       });
     };
 
