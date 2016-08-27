@@ -53,13 +53,17 @@
     this.currentUrl = undefined;
 
     var decodeWorker = new Worker('scripts/jsqrcode/qrworker.js');
+    var url = '';
 
     this.detectQRCode = function(imageData, callback) {
       callback = callback || function() {};
 
       decodeWorker.postMessage(imageData);
       decodeWorker.addEventListener('message', function(msg) {
-        callback(msg.data);
+        if (url != msg.data) {
+          callback(msg.data);
+          url = msg.data;
+        }
       });
     };
 
